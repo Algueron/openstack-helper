@@ -7,7 +7,13 @@ Collection of useful scripts for Openstack Management
 
 ````bash
 export NORTHDB=tcp:192.168.0.11:6641,tcp:192.168.0.12:6641
-sudo docker exec -it ovn_northd ovn-nbctl --db=$NORTHDB show
+sudo docker exec -it ovn_controller ovn-nbctl --db=$NORTHDB show
+````
+### Get Southbound database
+
+````bash
+export SOUTHDB=tcp:192.168.0.11:6642,tcp:192.168.0.12:6642
+sudo docker exec -it ovn_controller ovn-sbctl --db=$SOUTHDB list datapath_binding
 ````
 
 ## Virtual Machines
