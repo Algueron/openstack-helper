@@ -1,6 +1,15 @@
 # openstack-helper
 Collection of useful scripts for Openstack Management
 
+## Open Virtual Network (OVN)
+
+### Get Northbound database
+
+````bash
+export NORTHDB=tcp:192.168.0.11:6641,tcp:192.168.0.12:6641
+sudo docker exec -it ovn_northd ovn-nbctl --db=$NORTHDB show
+````
+
 ## Virtual Machines
 
 ### Retrieve the hypervisor host of a virtual machine
