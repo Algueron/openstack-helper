@@ -44,7 +44,7 @@ VM_ID=$(openstack server list --project $OS_PROJECT --name $VM_NAME -f value -c 
 VM_HYPERVISOR=$(openstack server show -c OS-EXT-SRV-ATTR:hypervisor_hostname -f value $VM_ID)
 ````
 
-## Retrieve the OVS tap device name of a virtual machine
+### Retrieve the OVS tap device name of a virtual machine
 
 ````bash
 . admin-openrc.sh
