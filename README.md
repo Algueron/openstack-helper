@@ -3,17 +3,29 @@ Collection of useful scripts for Openstack Management
 
 ## Open Virtual Network (OVN)
 
-### Get Northbound database
+### Get Northbound database content
 
 ````bash
 export NORTHDB=$(cat /etc/kolla/neutron-server/ml2_conf.ini | grep ovn_nb_connection | awk '{print $3}')
 sudo docker exec -it ovn_controller ovn-nbctl --db=$NORTHDB show
 ````
-### Get Southbound database
+### Get Southbound database content
 
 ````bash
 export SOUTHDB=$(cat /etc/kolla/neutron-server/ml2_conf.ini | grep ovn_sb_connection | awk '{print $3}')
 sudo docker exec -it ovn_controller ovn-sbctl --db=$SOUTHDB list datapath_binding
+````
+
+### Simulate the path of a pack from a VM a to another VM b
+
+````bash
+export SOUTHDB=$(cat /etc/kolla/neutron-server/ml2_conf.ini | grep ovn_sb_connection | awk '{print $3}')
+openstack port set --name ap $(openstack port list --server a -f value -c ID)
+openstack port set --name bp $(openstack port list --server b -f value -c ID)
+AP_MAC=$(openstack port show -f value -c mac_address ap)
+BP_MAC=$(openstack port show -f value -c mac_address bp)
+
+sudo docker exec -it ovn_controller ovn-trace --db=$SOUTHDB n1 'inport == "ap" && eth.src == '$AP_MAC' && eth.dst == '$BP_MAC
 ````
 
 ## Virtual Machines
