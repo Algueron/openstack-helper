@@ -19,6 +19,7 @@ sudo docker exec -it ovn_controller ovn-sbctl --db=$SOUTHDB list datapath_bindin
 ### Simulate the path of a pack from a VM a to another VM b
 
 ````bash
+. admin-openrc.sh
 export SOUTHDB=$(cat /etc/kolla/neutron-server/ml2_conf.ini | grep ovn_sb_connection | awk '{print $3}')
 openstack port set --name ap $(openstack port list --server a -f value -c ID)
 openstack port set --name bp $(openstack port list --server b -f value -c ID)
@@ -26,6 +27,21 @@ AP_MAC=$(openstack port show -f value -c mac_address ap)
 BP_MAC=$(openstack port show -f value -c mac_address bp)
 
 sudo docker exec -it ovn_controller ovn-trace --db=$SOUTHDB n1 'inport == "ap" && eth.src == '$AP_MAC' && eth.dst == '$BP_MAC
+````
+
+## Open vSwitch (OVS)
+
+### Simulate the path of a pack from a VM a to another VM b
+
+````bash
+. admin-openrc.sh
+openstack port set --name ap $(openstack port list --server a -f value -c ID)
+openstack port set --name bp $(openstack port list --server b -f value -c ID)
+AP_MAC=$(openstack port show -f value -c mac_address ap)
+BP_MAC=$(openstack port show -f value -c mac_address bp)
+AP_PORT=$(sudo docker exec openvswitch_vswitchd ovs-vsctl --bare --columns=ofport find  interface external-ids:attached-mac=\"$AP_MAC\")
+
+sudo docker exec openvswitch_vswitchd ovs-appctl ofproto/trace br-int in_port=$AP_PORT,dl_src=$AP_MAC,dl_dst=$BP_MAC
 ````
 
 ## Virtual Machines
