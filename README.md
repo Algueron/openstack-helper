@@ -44,6 +44,12 @@ AP_PORT=$(sudo docker exec openvswitch_vswitchd ovs-vsctl --bare --columns=ofpor
 sudo docker exec openvswitch_vswitchd ovs-appctl ofproto/trace br-int in_port=$AP_PORT,dl_src=$AP_MAC,dl_dst=$BP_MAC
 ````
 
+### Trace physical routes for real packets
+
+````bash
+sudo docker exec -it openvswitch_vswitchd watch ovs-dpctl dump-flows
+````
+
 ## Virtual Machines
 
 ### Retrieve the hypervisor host of a virtual machine
