@@ -6,13 +6,13 @@ Collection of useful scripts for Openstack Management
 ### Get Northbound database
 
 ````bash
-export NORTHDB=tcp:192.168.0.11:6641,tcp:192.168.0.12:6641
+export NORTHDB=$(cat /etc/kolla/neutron-server/ml2_conf.ini | grep ovn_nb_connection | awk '{print $3}')
 sudo docker exec -it ovn_controller ovn-nbctl --db=$NORTHDB show
 ````
 ### Get Southbound database
 
 ````bash
-export SOUTHDB=tcp:192.168.0.11:6642,tcp:192.168.0.12:6642
+export SOUTHDB=$(cat /etc/kolla/neutron-server/ml2_conf.ini | grep ovn_sb_connection | awk '{print $3}')
 sudo docker exec -it ovn_controller ovn-sbctl --db=$SOUTHDB list datapath_binding
 ````
 
