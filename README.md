@@ -31,6 +31,12 @@ sudo docker exec -it ovn_controller ovn-trace --db=$SOUTHDB n1 'inport == "ap" &
 
 ## Open vSwitch (OVS)
 
+### Display OVS devices
+
+````bash
+sudo docker exec openvswitch_vswitchd ovs-vsctl show
+````
+
 ### Simulate the path of a pack from a VM a to another VM b
 
 ````bash
