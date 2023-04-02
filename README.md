@@ -78,6 +78,17 @@ sudo docker exec openvswitch_vswitchd ovs-vsctl -- set Bridge $OVS_BRIDGE mirror
 sudo tcpdump -i snooper0 tcp port 22 and host 192.168.0.102 and 172.16.1.2
 ````
 
+### Delete a fake port
+
+````bash
+OVS_BRIDGE=br-int
+OVS_PORT=tapf9b87f34-cf
+
+sudo docker exec openvswitch_vswitchd ovs-vsctl clear Bridge $OVS_BRIDGE mirrors
+sudo docker exec openvswitch_vswitchd ovs-vsctl del-port $OVS_BRIDGE snooper0
+sudo ip link delete dev snooper0
+````
+
 ## Virtual Machines
 
 ### Retrieve the hypervisor host of a virtual machine
