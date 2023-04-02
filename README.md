@@ -50,6 +50,25 @@ sudo docker exec openvswitch_vswitchd ovs-appctl ofproto/trace br-int in_port=$A
 sudo docker exec -it openvswitch_vswitchd watch ovs-dpctl dump-flows
 ````
 
+### Create a fake port to listen traffic
+
+````bash
+# Create a fake Ethernet card snooper0
+sudo ip link add name snooper0 type dummy
+
+# Bring snooper0 up
+sudo ip link set dev snooper0 up
+
+# Connect snooper0 to the br-int OVS bridge
+sudo docker exec openvswitch_vswitchd ovs-vsctl add-port br-int snooper0
+
+# Create a mirror of a port of br-int on snooper0
+sudo docker exec openvswitch_vswitchd ovs-vsctl -- set Bridge br-int mirrors=@m  -- --id=@snooper0 get Port snooper0  -- --id=@tapf9b87f34-cf get Port patch-tun -- --id=@m create Mirror name=mymirror select-dst-port=@tapf9b87f34-cf select-src-port=@tapf9b87f34-cf output-port=@snooper0 select_all=1
+
+# Listen SSH traffic on snooper0
+sudo tcpdump -i snooper0 tcp port 22 and host 192.168.0.102 and 172.16.1.2
+````
+
 ## Virtual Machines
 
 ### Retrieve the hypervisor host of a virtual machine
